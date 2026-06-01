@@ -3444,7 +3444,6 @@ mod alias_thinking_detection_tests {
             "mimo-v2.5-pro should stream reasoning as thinking on Xiaomi MiMo"
         );
         for model in [
-            "qwen/qwen3.7-max",
             "arcee-ai/trinity-large-thinking",
             "minimax/minimax-m3",
             "xiaomi/mimo-v2.5-pro",

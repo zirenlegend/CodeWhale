@@ -331,7 +331,6 @@ fn picker_model_hint(id: &str) -> &'static str {
             "faster model"
         }
         "arcee-ai/trinity-large-thinking" => "large thinking",
-        "qwen/qwen3.7-max" => "large Qwen",
         "xiaomi/mimo-v2.5-pro" | "mimo-v2.5-pro" => "long context",
         "minimax/minimax-m3" => "1M multimodal",
         _ => "provider model",
@@ -640,14 +639,13 @@ mod tests {
         let (mut app, _lock) = create_test_app();
         app.api_provider = crate::config::ApiProvider::Openrouter;
         app.model_ids_passthrough = true;
-        app.model = "qwen/qwen3.7-max".to_string();
+        app.model = "minimax/minimax-m3".to_string();
         app.auto_model = false;
 
         let view = ModelPickerView::new(&app);
         let model_ids = view.visible_model_ids();
 
         assert!(model_ids.contains(&"arcee-ai/trinity-large-thinking"));
-        assert!(model_ids.contains(&"qwen/qwen3.7-max"));
         assert!(model_ids.contains(&"xiaomi/mimo-v2.5-pro"));
         assert!(model_ids.contains(&"minimax/minimax-m3"));
         assert!(
@@ -658,7 +656,7 @@ mod tests {
             "MiniMax M3 should be visible in the first picker window on normal terminals"
         );
         assert!(!view.show_custom_model_row);
-        assert_eq!(view.resolved_model(), "qwen/qwen3.7-max");
+        assert_eq!(view.resolved_model(), "minimax/minimax-m3");
     }
 
     #[test]

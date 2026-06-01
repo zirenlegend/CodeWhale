@@ -198,19 +198,6 @@ impl Default for ModelRegistry {
                 supports_reasoning: true,
             },
             ModelInfo {
-                id: "qwen/qwen3.7-max".to_string(),
-                provider: ProviderKind::Openrouter,
-                aliases: vec![
-                    "qwen3.7".to_string(),
-                    "qwen-3.7".to_string(),
-                    "qwen3-7".to_string(),
-                    "qwen3.7-max".to_string(),
-                    "qwen-3.7-max".to_string(),
-                ],
-                supports_tools: true,
-                supports_reasoning: true,
-            },
-            ModelInfo {
                 id: "xiaomi/mimo-v2.5-pro".to_string(),
                 provider: ProviderKind::Openrouter,
                 aliases: vec![
@@ -745,8 +732,6 @@ mod tests {
 
         for (alias, expected) in [
             ("trinity-large-thinking", "arcee-ai/trinity-large-thinking"),
-            ("qwen3.7", "qwen/qwen3.7-max"),
-            ("qwen3.7-max", "qwen/qwen3.7-max"),
             ("qwen3.6-35b-a3b", "qwen/qwen3.6-35b-a3b"),
             ("gemma-4-31b-it", "google/gemma-4-31b-it"),
             ("glm-5.1", "z-ai/glm-5.1"),

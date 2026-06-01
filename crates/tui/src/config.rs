@@ -56,7 +56,6 @@ pub const OPENROUTER_KIMI_K2_6_MODEL: &str = "moonshotai/kimi-k2.6";
 pub const OPENROUTER_MINIMAX_M3_MODEL: &str = "minimax/minimax-m3";
 pub const OPENROUTER_NEMOTRON_3_NANO_OMNI_MODEL: &str =
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free";
-pub const OPENROUTER_QWEN_3_7_MAX_MODEL: &str = "qwen/qwen3.7-max";
 pub const OPENROUTER_QWEN_3_6_35B_A3B_MODEL: &str = "qwen/qwen3.6-35b-a3b";
 pub const OPENROUTER_QWEN_3_6_27B_MODEL: &str = "qwen/qwen3.6-27b";
 pub const OPENROUTER_TENCENT_HY3_PREVIEW_MODEL: &str = "tencent/hy3-preview";
@@ -64,7 +63,6 @@ pub const OPENROUTER_XIAOMI_MIMO_V2_5_PRO_MODEL: &str = "xiaomi/mimo-v2.5-pro";
 pub const OPENROUTER_XIAOMI_MIMO_V2_5_MODEL: &str = "xiaomi/mimo-v2.5";
 pub const RECENT_OPENROUTER_LARGE_MODELS: &[&str] = &[
     OPENROUTER_ARCEE_TRINITY_LARGE_THINKING_MODEL,
-    OPENROUTER_QWEN_3_7_MAX_MODEL,
     OPENROUTER_MINIMAX_M3_MODEL,
     OPENROUTER_XIAOMI_MIMO_V2_5_PRO_MODEL,
     OPENROUTER_XIAOMI_MIMO_V2_5_MODEL,
@@ -516,13 +514,6 @@ fn canonical_openrouter_recent_model_id(model: &str) -> Option<&'static str> {
         OPENROUTER_NEMOTRON_3_NANO_OMNI_MODEL
         | "nemotron-3-nano-omni"
         | "nemotron-3-nano-omni-reasoning" => Some(OPENROUTER_NEMOTRON_3_NANO_OMNI_MODEL),
-        OPENROUTER_QWEN_3_7_MAX_MODEL
-        | "qwen3.7"
-        | "qwen-3.7"
-        | "qwen3-7"
-        | "qwen3.7-max"
-        | "qwen-3.7-max"
-        | "qwen3-7-max" => Some(OPENROUTER_QWEN_3_7_MAX_MODEL),
         OPENROUTER_QWEN_3_6_35B_A3B_MODEL
         | "qwen3.6-35b-a3b"
         | "qwen-3.6-35b-a3b"
@@ -6505,8 +6496,6 @@ api_key = "old-openrouter-key"
                 "trinity-large-thinking",
                 OPENROUTER_ARCEE_TRINITY_LARGE_THINKING_MODEL,
             ),
-            ("qwen3.7", OPENROUTER_QWEN_3_7_MAX_MODEL),
-            ("qwen3.7-max", OPENROUTER_QWEN_3_7_MAX_MODEL),
             ("qwen3.6-35b-a3b", OPENROUTER_QWEN_3_6_35B_A3B_MODEL),
             ("mimo-v2.5-pro", OPENROUTER_XIAOMI_MIMO_V2_5_PRO_MODEL),
             ("kimi-k2.6", OPENROUTER_KIMI_K2_6_MODEL),
@@ -6537,7 +6526,6 @@ api_key = "old-openrouter-key"
             DEFAULT_OPENROUTER_MODEL,
             DEFAULT_OPENROUTER_FLASH_MODEL,
             OPENROUTER_ARCEE_TRINITY_LARGE_THINKING_MODEL,
-            OPENROUTER_QWEN_3_7_MAX_MODEL,
             OPENROUTER_XIAOMI_MIMO_V2_5_PRO_MODEL,
             OPENROUTER_MINIMAX_M3_MODEL,
             OPENROUTER_QWEN_3_6_35B_A3B_MODEL,
@@ -8629,7 +8617,6 @@ model = "deepseek-ai/deepseek-v4-pro"
                 262_144,
                 262_144,
             ),
-            (OPENROUTER_QWEN_3_7_MAX_MODEL, 1_000_000, 65_536),
             (OPENROUTER_XIAOMI_MIMO_V2_5_PRO_MODEL, 1_000_000, 131_072),
             (OPENROUTER_MINIMAX_M3_MODEL, 1_000_000, 524_288),
         ] {

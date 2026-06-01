@@ -1445,6 +1445,10 @@ pub struct App {
     pub submit_pending_steers_after_interrupt: bool,
     /// Start time for current turn
     pub turn_started_at: Option<Instant>,
+    /// Most recent engine event observed for the current turn. This is
+    /// separate from `turn_started_at` because the latter drives elapsed-time
+    /// UI and must not be reset during long but healthy turns.
+    pub turn_last_activity_at: Option<Instant>,
     /// Sum of completed turn durations for this `App` instance (#448
     /// follow-up). Drives the footer's `worked Nh Mm` chip so the
     /// label reflects actual model work, not wall-clock since launch.
@@ -2055,6 +2059,7 @@ impl App {
             rejected_steers: VecDeque::new(),
             submit_pending_steers_after_interrupt: false,
             turn_started_at: None,
+            turn_last_activity_at: None,
             cumulative_turn_duration: std::time::Duration::ZERO,
             balance_cell: std::sync::Arc::new(std::sync::Mutex::new(None)),
             balance_initiated: false,

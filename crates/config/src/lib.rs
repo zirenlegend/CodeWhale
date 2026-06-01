@@ -36,7 +36,6 @@ const OPENROUTER_GLM_5_1_MODEL: &str = "z-ai/glm-5.1";
 const OPENROUTER_KIMI_K2_6_MODEL: &str = "moonshotai/kimi-k2.6";
 const OPENROUTER_NEMOTRON_3_NANO_OMNI_MODEL: &str =
     "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free";
-const OPENROUTER_QWEN_3_7_MAX_MODEL: &str = "qwen/qwen3.7-max";
 const OPENROUTER_QWEN_3_6_35B_A3B_MODEL: &str = "qwen/qwen3.6-35b-a3b";
 const OPENROUTER_QWEN_3_6_27B_MODEL: &str = "qwen/qwen3.6-27b";
 const OPENROUTER_TENCENT_HY3_PREVIEW_MODEL: &str = "tencent/hy3-preview";
@@ -1525,13 +1524,6 @@ fn canonical_openrouter_recent_model_id(model: &str) -> Option<&'static str> {
         OPENROUTER_NEMOTRON_3_NANO_OMNI_MODEL
         | "nemotron-3-nano-omni"
         | "nemotron-3-nano-omni-reasoning" => Some(OPENROUTER_NEMOTRON_3_NANO_OMNI_MODEL),
-        OPENROUTER_QWEN_3_7_MAX_MODEL
-        | "qwen3.7"
-        | "qwen-3.7"
-        | "qwen3-7"
-        | "qwen3.7-max"
-        | "qwen-3.7-max"
-        | "qwen3-7-max" => Some(OPENROUTER_QWEN_3_7_MAX_MODEL),
         OPENROUTER_QWEN_3_6_35B_A3B_MODEL
         | "qwen3.6-35b-a3b"
         | "qwen-3.6-35b-a3b"
@@ -3845,8 +3837,6 @@ unix_socket_path = "/tmp/cw-hooks.sock"
                 "trinity-large-thinking",
                 OPENROUTER_ARCEE_TRINITY_LARGE_THINKING_MODEL,
             ),
-            ("qwen3.7", OPENROUTER_QWEN_3_7_MAX_MODEL),
-            ("qwen3.7-max", OPENROUTER_QWEN_3_7_MAX_MODEL),
             ("qwen3.6-35b-a3b", OPENROUTER_QWEN_3_6_35B_A3B_MODEL),
             ("mimo-v2.5-pro", OPENROUTER_XIAOMI_MIMO_V2_5_PRO_MODEL),
             ("kimi-k2.6", OPENROUTER_KIMI_K2_6_MODEL),

@@ -12,8 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Recent large OpenRouter model presets.** Added completions, aliases,
-  routing metadata, and docs for Arcee Trinity Large Thinking, Qwen 3.7
-  Max, Xiaomi MiMo v2.5, Qwen 3.6 open-weight models, Kimi K2.6,
+  routing metadata, and docs for Arcee Trinity Large Thinking,
+  MiniMax M3, Xiaomi MiMo v2.5, Qwen 3.6 open-weight models, Kimi K2.6,
   GLM 5.1, Tencent Hy3, Gemma 4, and Nemotron (#2461).
 - **Provider and web-search expansion.** Added Xiaomi MiMo provider support,
   SiliconFlow, AtlasCloud static models, Volcengine Ark search, Baidu AI
@@ -33,6 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   support, Vietnamese localization, Java/Vue language-server defaults, runtime
   event envelopes, task migration/env isolation fixes, and state-message
   parent IDs for future forks (#2383, #2358, #2367, #2252, #2272, #2308).
+
+### Removed
+
+- **Qwen 3.7 Max OpenRouter preset.** Removed from the model registry, docs,
+  and examples. Qwen 3.7 Max is a hosted model, not open-source; the preset
+  will return when an open-weight Qwen 3.7 release ships.
 
 ### Changed
 

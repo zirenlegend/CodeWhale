@@ -2510,6 +2510,55 @@ fn turn_liveness_leaves_active_turn_running() {
 }
 
 #[test]
+fn turn_liveness_uses_recent_turn_activity_not_turn_start() {
+    let mut app = create_test_app();
+    let now = Instant::now();
+    app.is_loading = true;
+    app.runtime_turn_status = Some("in_progress".to_string());
+    app.turn_started_at = Some(now - TURN_STALL_WATCHDOG_TIMEOUT - Duration::from_secs(30));
+    app.turn_last_activity_at = Some(now - Duration::from_secs(1));
+
+    let recovered = reconcile_turn_liveness(&mut app, now, false);
+
+    assert!(!recovered);
+    assert!(app.is_loading);
+    assert!(app.runtime_turn_status.is_some());
+    assert!(app.status_toasts.is_empty());
+}
+
+#[test]
+fn turn_liveness_does_not_abort_running_tool() {
+    let mut app = create_test_app();
+    let now = Instant::now();
+    app.is_loading = true;
+    app.runtime_turn_status = Some("in_progress".to_string());
+    app.turn_started_at = Some(now - TURN_STALL_WATCHDOG_TIMEOUT - Duration::from_secs(30));
+    app.turn_last_activity_at = app.turn_started_at;
+    let mut active = ActiveCell::new();
+    active.push_tool(
+        "tool-1",
+        HistoryCell::Tool(ToolCell::Generic(GenericToolCell {
+            name: "edit_file".to_string(),
+            status: ToolStatus::Running,
+            input_summary: Some("path: CHANGELOG.md".to_string()),
+            output: None,
+            prompts: None,
+            spillover_path: None,
+            output_summary: None,
+            is_diff: false,
+        })),
+    );
+    app.active_cell = Some(active);
+
+    let recovered = reconcile_turn_liveness(&mut app, now, false);
+
+    assert!(!recovered);
+    assert!(app.is_loading);
+    assert!(app.active_cell.is_some());
+    assert!(app.status_toasts.is_empty());
+}
+
+#[test]
 fn turn_liveness_recovers_stalled_in_progress_turn() {
     let mut app = create_test_app();
     app.is_loading = true;

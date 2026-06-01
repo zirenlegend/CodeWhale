@@ -239,14 +239,14 @@ fn browser_open_command(url: &str) -> Result<Command> {
     {
         let mut command = Command::new("open");
         command.arg(url);
-        return Ok(command);
+        Ok(command)
     }
 
     #[cfg(target_os = "linux")]
     {
         let mut command = Command::new("xdg-open");
         command.arg(url);
-        return Ok(command);
+        Ok(command)
     }
 
     #[cfg(target_os = "windows")]

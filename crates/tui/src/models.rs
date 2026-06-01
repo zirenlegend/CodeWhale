@@ -253,8 +253,7 @@ fn known_context_window_for_model(model_lower: &str) -> Option<u32> {
         | "moonshotai/kimi-k2.6:free" => Some(262_144),
         "z-ai/glm-5.1" | "z-ai/glm-5v-turbo" => Some(202_752),
         "minimax/minimax-m3" => Some(1_000_000),
-        "qwen/qwen3.7-max"
-        | "xiaomi/mimo-v2.5-pro"
+        "xiaomi/mimo-v2.5-pro"
         | "xiaomi/mimo-v2.5"
         | "mimo-v2.5-pro"
         | "mimo-v2.5"
@@ -276,7 +275,7 @@ pub fn max_output_tokens_for_model(model: &str) -> Option<u32> {
         "xiaomi/mimo-v2.5-pro" | "xiaomi/mimo-v2.5" | "mimo-v2.5-pro" | "mimo-v2.5" => {
             Some(131_072)
         }
-        "qwen/qwen3.7-max" | "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" => Some(65_536),
+        "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free" => Some(65_536),
         "google/gemma-4-31b-it" => Some(16_384),
         "google/gemma-4-31b-it:free" | "google/gemma-4-26b-a4b-it:free" => Some(32_768),
         _ => None,
@@ -300,7 +299,6 @@ pub fn model_supports_reasoning(model: &str) -> bool {
             | "moonshotai/kimi-k2.6:free"
             | "minimax/minimax-m3"
             | "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
-            | "qwen/qwen3.7-max"
             | "qwen/qwen3.6-35b-a3b"
             | "qwen/qwen3.6-27b"
             | "tencent/hy3-preview"
@@ -500,7 +498,6 @@ mod tests {
     fn recent_openrouter_large_models_have_static_windows() {
         for (model, expected_window) in [
             ("arcee-ai/trinity-large-thinking", 262_144),
-            (concat!("qwen/", "qwen3.7-max"), 1_000_000),
             (concat!("qwen/", "qwen3.6-35b-a3b"), 262_144),
             (concat!("xiaomi/", "mimo-v2.5-pro"), 1_000_000),
             ("mimo-v2.5-pro", 1_000_000),
@@ -519,10 +516,6 @@ mod tests {
         assert_eq!(
             max_output_tokens_for_model("arcee-ai/trinity-large-thinking"),
             Some(262_144)
-        );
-        assert_eq!(
-            max_output_tokens_for_model(concat!("qwen/", "qwen3.7-max")),
-            Some(65_536)
         );
         assert_eq!(
             max_output_tokens_for_model(concat!("xiaomi/", "mimo-v2.5-pro")),

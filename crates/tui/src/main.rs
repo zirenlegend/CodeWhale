@@ -6076,7 +6076,7 @@ mod terminal_mode_tests {
             default_text_model: Some("deepseek/deepseek-v4-pro".to_string()),
             providers: Some(crate::config::ProvidersConfig {
                 openrouter: crate::config::ProviderConfig {
-                    model: Some("qwen/qwen3.7-max".to_string()),
+                    model: Some("arcee-ai/trinity-large-thinking".to_string()),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -6084,7 +6084,10 @@ mod terminal_mode_tests {
             ..Default::default()
         };
 
-        assert_eq!(resolve_exec_model(&config, None), "qwen/qwen3.7-max");
+        assert_eq!(
+            resolve_exec_model(&config, None),
+            "arcee-ai/trinity-large-thinking"
+        );
         assert_eq!(
             resolve_exec_model(&config, Some("arcee-ai/trinity-large-thinking")),
             "arcee-ai/trinity-large-thinking"

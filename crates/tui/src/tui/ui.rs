@@ -1158,6 +1158,7 @@ async fn run_event_loop(
                 } else if !app.is_loading && ignore_stale_stream_event_while_idle(&event) {
                     continue;
                 }
+                record_turn_activity(app, &event, Instant::now());
                 match event {
                     EngineEvent::MessageStarted { .. } => {
                         // Assistant text starting after parallel tool work
@@ -1474,7 +1475,9 @@ async fn run_event_loop(
                         app.streaming_state.reset();
                         app.streaming_message_index = None;
                         app.streaming_thinking_active_entry = None;
-                        app.turn_started_at = Some(Instant::now());
+                        let now = Instant::now();
+                        app.turn_started_at = Some(now);
+                        app.turn_last_activity_at = Some(now);
                         // Discoverability hint for users who don't know how
                         // to interrupt a long-running turn (#1367). Only
                         // surface when the status_message slot is empty so
@@ -1541,6 +1544,7 @@ async fn run_event_loop(
                         let turn_elapsed =
                             app.turn_started_at.map(|t| t.elapsed()).unwrap_or_default();
                         app.turn_started_at = None;
+                        app.turn_last_activity_at = None;
                         // Roll the just-finished turn's elapsed time into the
                         // cumulative session work-time (#448 follow-up). The
                         // footer's `worked Nh Mm` chip reads this so the
@@ -4077,6 +4081,7 @@ fn reconcile_turn_liveness(app: &mut App, now: Instant, has_running_agents: bool
         app.is_loading = false;
         app.dispatch_started_at = None;
         app.turn_started_at = None;
+        app.turn_last_activity_at = None;
         app.push_status_toast(
             "Turn dispatch timed out; the engine may have stopped. Please try again.",
             StatusToastLevel::Error,
@@ -4097,6 +4102,7 @@ fn reconcile_turn_liveness(app: &mut App, now: Instant, has_running_agents: bool
         app.is_loading = false;
         app.dispatch_started_at = None;
         app.turn_started_at = None;
+        app.turn_last_activity_at = None;
         app.push_status_toast(
             "Recovered from an inconsistent busy state.",
             StatusToastLevel::Warning,
@@ -4111,9 +4117,13 @@ fn reconcile_turn_liveness(app: &mut App, now: Instant, has_running_agents: bool
         && matches!(app.runtime_turn_status.as_deref(), Some("in_progress"))
         && !has_running_agents
         && !app.is_compacting
-        && app.turn_started_at.is_some_and(|started| {
-            now.saturating_duration_since(started) > TURN_STALL_WATCHDOG_TIMEOUT
-        })
+        && !active_turn_has_running_tool(app)
+        && app
+            .turn_last_activity_at
+            .or(app.turn_started_at)
+            .is_some_and(|last_activity| {
+                now.saturating_duration_since(last_activity) > TURN_STALL_WATCHDOG_TIMEOUT
+            })
     {
         // Finalize in-flight thinking / assistant / tool cells so the
         // transcript doesn't show permanent spinners after recovery.
@@ -4126,6 +4136,7 @@ fn reconcile_turn_liveness(app: &mut App, now: Instant, has_running_agents: bool
 
         app.is_loading = false;
         app.turn_started_at = None;
+        app.turn_last_activity_at = None;
         app.runtime_turn_status = None;
         app.runtime_turn_id = None;
         app.dispatch_started_at = None;
@@ -4140,6 +4151,44 @@ fn reconcile_turn_liveness(app: &mut App, now: Instant, has_running_agents: bool
     }
 
     false
+}
+
+fn record_turn_activity(app: &mut App, event: &EngineEvent, now: Instant) {
+    if matches!(event, EngineEvent::TurnStarted { .. }) {
+        app.turn_last_activity_at = Some(now);
+        return;
+    }
+
+    if app.is_loading || matches!(app.runtime_turn_status.as_deref(), Some("in_progress")) {
+        app.turn_last_activity_at = Some(now);
+    }
+}
+
+fn active_turn_has_running_tool(app: &App) -> bool {
+    app.active_cell.as_ref().is_some_and(|active| {
+        active.entries().iter().any(|cell| match cell {
+            HistoryCell::Tool(tool) => tool_cell_is_running(tool),
+            _ => false,
+        })
+    })
+}
+
+fn tool_cell_is_running(tool: &ToolCell) -> bool {
+    match tool {
+        ToolCell::Exec(cell) => cell.status == ToolStatus::Running,
+        ToolCell::Exploring(cell) => cell
+            .entries
+            .iter()
+            .any(|entry| entry.status == ToolStatus::Running),
+        ToolCell::PlanUpdate(cell) => cell.status == ToolStatus::Running,
+        ToolCell::PatchSummary(cell) => cell.status == ToolStatus::Running,
+        ToolCell::Review(cell) => cell.status == ToolStatus::Running,
+        ToolCell::DiffPreview(_) => false,
+        ToolCell::Mcp(cell) => cell.status == ToolStatus::Running,
+        ToolCell::ViewImage(_) => false,
+        ToolCell::WebSearch(cell) => cell.status == ToolStatus::Running,
+        ToolCell::Generic(cell) => cell.status == ToolStatus::Running,
+    }
 }
 
 /// Translate an `EngineEvent::Error` into UI state updates.
@@ -6879,6 +6928,7 @@ fn mark_active_turn_cancelled_locally(app: &mut App) {
     app.is_loading = false;
     app.dispatch_started_at = None;
     app.turn_started_at = None;
+    app.turn_last_activity_at = None;
     app.streaming_state.reset();
     app.runtime_turn_id = None;
     app.runtime_turn_status = None;
